@@ -73,3 +73,42 @@ object Main:
         case Right(value) =>
           logger.info(s"Diff yaml file ${outputDirectory.concat(outGraphFileName.concat(".yaml"))} contains the delta between the original and the perturbed graphs.")
           logger.info(s"Done! Please check the content of the output directory $outputDirectory")
+
+          /* Code written by Shreya Boyapati for Homework 2*/
+          val perturbed = NetGraph.load(s"$outGraphFileName.perturbed")
+          val df = new SimpleDateFormat("dd-MM-yy-HH-mm-ss")
+          val myDir = new File("/Users/shreyaboyapati/Downloads/randomWalker-main/input" + df.format(new Date(System.currentTimeMillis())))
+          myDir.mkdir()
+
+          g match
+            case Some(graph) =>
+              val value = graph.sm.nodes().asScala.toList
+              val persistedNodes = perturbed.head.sm.nodes().asScala.toList
+              val filepath = myDir.toString + "/input.txt"
+              val filepath2 = myDir.toString + "/input2.txt"
+
+              val fos = new FileOutputStream(filepath)
+              val oos = new ObjectOutputStream(fos)
+
+              var content = ""
+              value.foreach(node => content = content + node.id + ",")
+              content = content + ";"
+              persistedNodes.foreach(node => content = content + node.id + ",")
+              content = content + ";"
+              value.foreach(node => node.childrenObjects.foreach(child => content = content + node.id + ":" + child.id + ","))
+              content = content + ";"
+              persistedNodes.foreach(node => node.childrenObjects.foreach(child => content = content + node.id + ":" + child.id + ","))
+
+              oos.writeObject(content)
+              oos.close()
+              fos.close()
+
+              var edges = ""
+              value.foreach(node => node.childrenObjects.foreach(child => edges = edges + node.id + " " + child.id + "\n"))
+
+              val contentBytes = edges.getBytes(StandardCharsets.UTF_8)
+              Files.write(Paths.get(filepath2), contentBytes)
+
+              logger.info("Graph info found at " + filepath)
+            case None =>
+              logger.info("Error: g is of incorrect type")
