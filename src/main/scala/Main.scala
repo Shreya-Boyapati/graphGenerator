@@ -103,6 +103,8 @@ object Main:
               value.foreach(node => node.childrenObjects.foreach(child => content = content + node.id + ":" + child.id + ","))
               content = content + ";"
               persistedNodes.foreach(node => node.childrenObjects.foreach(child => content = content + node.id + ":" + child.id + ","))
+              content = content + ";"
+              value.foreach(node => if (node.valuableData) content = content + node.id + ",")
 
               oos.writeObject(content)
               oos.close()
