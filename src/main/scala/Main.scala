@@ -82,7 +82,7 @@ object Main:
           /* Code written by Shreya Boyapati for Homework 2*/
           val perturbed = NetGraph.load(s"$outGraphFileName.perturbed")
           val df = new SimpleDateFormat("dd-MM-yy-HH-mm-ss")
-          val myDir = new File("/Users/shreyaboyapati/Downloads/randomWalker-main/input" + df.format(new Date(System.currentTimeMillis())))
+          val myDir = new File(outputDirectory + df.format(new Date(System.currentTimeMillis())))
           myDir.mkdir()
 
           g match
